@@ -1,0 +1,555 @@
+body {
+  min-height: 100vh;
+}
+
+.bar {
+  border-bottom: 2px solid var(--marker) !important;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.brand .mascot {
+  transition: transform 0.3s var(--bounce);
+}
+
+
+
+.brand .wordmark {
+  font-size: 16px;
+}
+
+.brand h1::before {
+  content: '·';
+  margin-right: 10px;
+  color: var(--ink-faint);
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.count {
+  font-size: 12px;
+  color: var(--ink-soft);
+  background: var(--sunken);
+  border-radius: 0;
+  padding: 1px 8px;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(360px, 45vw);
+  padding: 0 8px 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: rgb(var(--fg-rgb) / 0.04);
+  color: var(--ink-soft);
+}
+
+/* ไอคอนแว่นขยายอยู่ใน span (inline) จะลอยขึ้นตามเส้นฐานตัวอักษร: ให้เป็น flex จะได้อยู่กลางพอดี */
+.search > span {
+  display: flex;
+}
+
+.search:focus-within {
+  border-color: var(--marker);
+  box-shadow: 0 0 0 3px var(--marker-soft);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  padding: 7px 0;
+  outline: none;
+  color: var(--ink);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 24px 0;
+}
+
+.filters button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 0;
+  padding: 4px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-soft);
+}
+
+.filters button .icon {
+  width: 14px;
+  height: 14px;
+  color: var(--ink-faint);
+  transition: color 0.12s;
+}
+
+.filters button:hover .icon,
+.filters button[aria-pressed='true'] .icon {
+  color: var(--marker-ink);
+}
+
+.filters button:hover {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.filters button[aria-pressed='true'] {
+  background: var(--marker-soft);
+  border-color: rgb(var(--accent-rgb) / 0.5);
+  box-shadow: inset 0 -2px 0 var(--marker);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.filters .hint {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+/* ---------- กลุ่มตามเว็บ ---------- */
+.sites {
+  display: grid;
+  gap: 28px;
+  padding: 18px 24px 48px;
+}
+
+.site-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.site-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--on-accent);
+  background: var(--marker);
+}
+
+.site-icon img {
+  position: absolute;
+  inset: 4px;
+  opacity: 0;
+}
+
+.site-icon.has-img {
+  color: transparent;
+  background: rgb(var(--fg-rgb) / 0.06);
+}
+
+.site-icon.has-img img {
+  opacity: 1;
+}
+
+.site-head h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site-head .count {
+  font-size: 12px;
+  color: var(--ink-soft);
+  background: rgb(var(--fg-rgb) / 0.06);
+  padding: 0 7px;
+}
+
+.site-head .when {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  border-radius: 0;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.card:hover,
+.card:focus-within {
+  border-color: rgb(var(--accent-rgb) / 0.6);
+  box-shadow: inset 0 -2px 0 var(--marker);
+}
+
+.card .preview {
+  display: block;
+  aspect-ratio: 4 / 3;
+  background: var(--sunken) center top / cover no-repeat;
+  border-bottom: 1px solid var(--line);
+}
+
+.card .preview:focus-visible {
+  outline: none;
+}
+
+.card .meta {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px 12px;
+  min-width: 0;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card .host {
+  font-size: 12px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card .info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px 1px 6px;
+  border-radius: 0;
+  background: rgb(var(--fg-rgb) / 0.06);
+  color: var(--ink-soft);
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.chip .icon {
+  width: 13px;
+  height: 13px;
+}
+
+.chip.notes {
+  background: var(--marker-soft);
+  color: var(--marker-ink);
+}
+
+/* เปลี่ยนชื่อในการ์ด */
+.card h2.editing {
+  margin: -1px -5px;
+  padding: 0 4px;
+  overflow: hidden;
+  text-overflow: clip;
+  border: 1px solid var(--marker);
+  background: var(--paper);
+  outline: none;
+  cursor: text;
+}
+
+.card .tools {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+
+.card:hover .tools,
+.card:focus-within .tools {
+  opacity: 1;
+}
+
+.card .tools button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  min-width: 30px;
+  justify-content: center;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 0;
+  background: rgba(24, 25, 30, 0.85);
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  backdrop-filter: blur(4px);
+}
+
+.card .tools button:hover {
+  background: rgb(var(--accent-rgb));
+  color: var(--on-accent);
+}
+
+.card .tools button.confirm {
+  background: var(--danger);
+}
+
+.card .tools .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.card.removing {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+.empty {
+  text-align: center;
+  color: var(--ink-soft);
+  padding: 80px 24px;
+  margin: 0;
+}
+
+.empty .mascot {
+  display: block;
+  margin: 0 auto 12px;
+  animation: bob 2.4s ease-in-out infinite;
+}
+
+.empty strong {
+  display: block;
+  color: var(--ink);
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+@media (hover: none) {
+  .card .tools {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .bar {
+    flex-wrap: wrap;
+    padding: 12px 16px;
+  }
+
+  .search {
+    order: 3;
+    width: 100%;
+  }
+
+  .filters,
+  .sites {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .filters .hint {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+.site-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 8px;
+  border: 0;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.12s, background 0.12s;
+}
+
+.site-clear .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.site-clear:hover {
+  background: color-mix(in srgb, var(--danger) 24%, transparent);
+}
+
+.site-clear.confirm {
+  color: #fff;
+  background: var(--danger);
+  font-weight: 600;
+}
+
+.site {
+  transition: opacity 0.15s;
+}
+
+.site.removing {
+  opacity: 0;
+}
+
+/* ---------- เลือกหลายรูป ---------- */
+.card .pick {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1.5px solid rgb(255 255 255 / 0.85);
+  background: rgb(24 25 30 / 0.55);
+  color: transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+
+.card .pick .icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.4;
+}
+
+.card:hover .pick,
+.card:focus-within .pick,
+body.selecting .card .pick {
+  opacity: 1;
+}
+
+.card .pick:hover {
+  border-color: rgb(var(--accent-rgb));
+  color: rgb(255 255 255 / 0.6);
+}
+
+.card.selected .pick {
+  border-color: rgb(var(--accent-rgb));
+  background: rgb(var(--accent-rgb));
+  color: var(--on-accent);
+}
+
+.card.selected {
+  border-color: var(--marker);
+  box-shadow: inset 0 0 0 1px var(--marker);
+}
+
+body.selecting .card .preview {
+  cursor: pointer;
+}
+
+body.selecting .sites {
+  padding-bottom: 96px; /* ไม่ให้แถบล่างบังการ์ดแถวสุดท้าย */
+}
+
+.select-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 32px);
+  padding: 8px 10px 8px 16px;
+  transform: translateX(-50%);
+  background: var(--raised);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--marker);
+  box-shadow: var(--shadow-lg);
+}
+
+.select-bar[hidden] {
+  display: none;
+}
+
+.select-bar .sel-count {
+  margin-right: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.select-bar .sel-divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--line);
+}
+
+@media (hover: none) {
+  .card .pick {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .select-bar {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* แถบเลือกอยู่ด้านล่าง: ยกข้อความแจ้งเตือนขึ้นไปเหนือแถบ */
+body.selecting .toast {
+  bottom: 84px;
+}

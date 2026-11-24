@@ -1,0 +1,1737 @@
+body {
+  min-height: 100vh;
+}
+
+/* ---------- แถบบน ---------- */
+.bar {
+  border-bottom: 2px solid var(--marker) !important;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 20px 4px 12px;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.source {
+  min-width: 0;
+}
+
+.source h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ชื่อรูป: คลิกเพื่อเปลี่ยนชื่อ */
+.source h1.renamable {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 40px;
+  box-sizing: border-box;
+  padding: 1px 4px;
+  margin-left: -4px;
+  border: 1px solid transparent;
+  cursor: text;
+}
+
+.source h1.renamable:hover {
+  border-color: var(--line);
+}
+
+.source h1[contenteditable='plaintext-only'],
+.source h1[contenteditable='true'] {
+  overflow: hidden;
+  text-overflow: clip;
+  border-color: var(--marker);
+  background: var(--paper);
+  outline: none;
+}
+
+.sub {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+  min-width: 0;
+}
+
+.sub a {
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.sub a:hover {
+  text-decoration: underline;
+}
+
+.size {
+  white-space: nowrap;
+  flex: none;
+}
+
+.size:not(:empty)::before {
+  content: '·';
+  margin-right: 10px;
+}
+
+.zoom {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.zoom .icon-btn {
+  width: 28px;
+  height: 28px;
+}
+
+.zoom-label {
+  min-width: 64px;
+  height: 28px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+
+.zoom-label:hover {
+  background: var(--sunken);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.actions .divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--line);
+}
+
+/* ---------- แถบเครื่องมือโน้ต ---------- */
+.toolbar {
+  position: sticky;
+  top: var(--bar-h, 61px); /* JS วัดความสูงแถบบนจริงใส่ให้ กันแถบเครื่องมือซ้อนใต้ตอนเลื่อน */
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 6px 20px;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+}
+
+.toolbar .group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 0;
+  background: none;
+}
+
+.toolbar .group.swatches {
+  padding: 2px 6px;
+}
+
+.toolbar .sep {
+  width: 1px;
+  height: 20px;
+  background: var(--line);
+}
+
+.tool {
+  position: relative;
+}
+
+
+.swatch {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.swatch > span:not(.tip) {
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
+  background: var(--c);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+  transition: transform 0.1s;
+}
+
+.swatch:hover > span:not(.tip) {
+  transform: scale(1.12);
+}
+
+.swatch[aria-selected='true'] {
+  box-shadow: inset 0 0 0 2px var(--c);
+}
+
+
+.notes {
+  margin: 0;
+  padding: 8px 20px;
+  font-size: 13px;
+  color: var(--marker-ink);
+  background: var(--marker-soft);
+  border-bottom: 1px solid var(--line);
+}
+
+/* ---------- ภาพ ---------- */
+.canvas {
+  padding: 28px 20px 80px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 28px;
+  overflow-x: auto;
+}
+
+.part {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  justify-self: safe center; /* ภาพกว้างกว่าจอ: ชิดซ้ายแทนการล้นออกทั้งสองข้าง เลื่อนดูได้ครบ */
+  max-width: 100%;
+}
+
+.canvas.zoomed .part {
+  max-width: none;
+}
+
+.part figcaption {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.stage {
+  position: relative;
+  max-width: 100%;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  background: var(--surface);
+  line-height: 0;
+}
+
+.canvas.zoomed .stage {
+  max-width: none;
+}
+
+.stage img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.annotations {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  overflow: visible;
+}
+
+/* รูปที่มีอยู่จับลากย้ายได้ทุกเครื่องมือ */
+.annotations [data-id],
+.annotations [data-id] * {
+  cursor: move;
+}
+
+/* ข้างในกรอบโปร่ง: จับได้เฉพาะตอนใช้เครื่องมือเลือก เครื่องมืออื่นยังวาดซ้อนข้างในได้ */
+.stage:not([data-tool='select']) .annotations .interior {
+  pointer-events: none;
+}
+
+.stage:not([data-tool='select']) .annotations {
+  cursor: crosshair;
+}
+
+.stage[data-tool='text'] .annotations {
+  cursor: text;
+}
+
+.annotations .sel {
+  fill: none;
+  stroke: var(--marker);
+  stroke-opacity: 0.45;
+  pointer-events: none;
+}
+
+.annot-input {
+  position: absolute;
+  z-index: 2;
+  min-width: 180px;
+  padding: 2px 6px;
+  border: 2px solid var(--marker);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+  line-height: 1.4;
+  font-family: var(--font);
+  outline: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+
+/* ---------- สถานะว่าง / กำลังโหลด ---------- */
+.empty {
+  color: var(--ink-soft);
+  padding: 60px 0;
+  text-align: center;
+}
+
+.empty a {
+  color: var(--ink);
+}
+
+.loading {
+  width: min(900px, 100%);
+  aspect-ratio: 16 / 10;
+  border-radius: 0;
+  background: linear-gradient(90deg, var(--surface) 0%, var(--raised) 50%, var(--surface) 100%) 0 0 / 200% 100%;
+  box-shadow: var(--shadow-lg);
+  animation: shimmer 1.2s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .bar {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+
+  .toolbar {
+    position: static;
+  }
+
+}
+
+.back {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 38px;
+  transition: background 0.12s;
+}
+
+.back:hover {
+  background: var(--marker-soft);
+}
+
+/* จุดจับย่อ/ขยาย (แบบ Photoshop) */
+.annotations .handle {
+  fill: #fff;
+  stroke: var(--marker);
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+.annotations .handle-nw,
+.annotations .handle-se {
+  cursor: nwse-resize;
+}
+
+.annotations .handle-ne,
+.annotations .handle-sw {
+  cursor: nesw-resize;
+}
+
+.annotations .handle-start,
+.annotations .handle-end {
+  cursor: move;
+}
+
+/* ขนาดเส้น / การเติมสี */
+.style-btn {
+  width: 28px;
+  height: 28px;
+}
+
+.style-btn[aria-checked='true'] {
+  background: var(--marker-soft);
+  border-color: rgb(var(--accent-rgb) / 0.6);
+  color: var(--marker-ink);
+}
+
+/* dropdown ขนาดเส้น */
+.dropdown {
+  position: relative;
+}
+
+.dd-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 6px 0 4px;
+  border: 1px solid var(--line);
+  background: rgb(var(--fg-rgb) / 0.04);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.dd-btn:hover:not(:disabled),
+.dd-btn[aria-pressed='true'] {
+  border-color: rgb(var(--accent-rgb) / 0.6);
+  background: var(--marker-soft);
+  color: var(--marker-ink);
+}
+
+.dd-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.dd-btn .icon.line,
+.dd-item .icon.line {
+  height: 20px;
+  width: auto;
+}
+
+.dd-caret {
+  width: 0;
+  height: 0;
+  border-left: 3.5px solid transparent;
+  border-right: 3.5px solid transparent;
+  border-top: 4px solid currentColor;
+}
+
+.dd-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  z-index: 10;
+  transform: translateX(-50%);
+  min-width: 140px;
+  padding: 4px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--marker);
+  box-shadow: var(--shadow-lg);
+}
+
+.dd-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 10px 6px 6px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dd-item:hover {
+  background: rgb(var(--fg-rgb) / 0.06);
+}
+
+.dd-item[aria-selected='true'] {
+  background: var(--marker-soft);
+  color: var(--marker-ink);
+  font-weight: 600;
+}
+
+/* เส้นประรอบรูปที่เลือก: กดค้างแล้วลากย้ายได้ */
+.annotations .sel-grip {
+  fill: none;
+  stroke: transparent;
+  pointer-events: stroke;
+  cursor: move;
+}
+
+/* กรอบลากคลุมเพื่อเลือกหลายชิ้น */
+.annotations .marquee {
+  fill: rgb(var(--accent-rgb) / 0.08);
+  stroke: var(--marker);
+  stroke-width: 1px;
+  stroke-dasharray: 4 3;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+/* ช่องแก้เลขในวงกลม (ดับเบิลคลิกที่วงกลมเลข) */
+.annot-input.step-input {
+  min-width: 0;
+  padding: 0;
+  text-align: center;
+  color: var(--ink) !important;
+}
+
+/* ---------- dropdown สี ---------- */
+.colour-btn {
+  padding: 0 6px;
+}
+
+.colour-now {
+  width: 16px;
+  height: 16px;
+  background: #e5484d;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.25), 0 0 0 1px rgb(var(--fg-rgb) / 0.15);
+}
+
+.colour-menu {
+  width: 196px;
+  padding: 10px;
+}
+
+.colour-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  justify-items: center;
+}
+
+.colour-grid .swatch > span:not(.tip) {
+  width: 20px;
+  height: 20px;
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), 0 0 0 1px rgb(var(--fg-rgb) / 0.12);
+}
+
+.colour-grid .swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 0;
+}
+
+.colour-grid .swatch[aria-selected='true'] {
+  box-shadow: inset 0 0 0 2px var(--marker);
+}
+
+.colour-title {
+  margin: 10px 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.colour-tools {
+  display: grid;
+  gap: 2px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.colour-action {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 6px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.colour-action:hover {
+  background: rgb(var(--fg-rgb) / 0.06);
+}
+
+.colour-action .icon {
+  width: 16px;
+  height: 16px;
+  color: var(--marker-ink);
+}
+
+/* ช่องเลือกสีของ browser ซ่อนไว้ใต้ปุ่ม "กำหนดสีเอง" (กดทั้งแถวเพื่อเปิด) */
+.colour-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* ---------- ดูดสีจากภาพ ---------- */
+body.picking .stage,
+body.picking .stage * {
+  cursor: crosshair !important;
+}
+
+.pick-loupe {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px 5px 5px;
+  background: var(--raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  font: 600 12px/1 var(--font);
+  color: var(--ink);
+  pointer-events: none;
+}
+
+.pick-chip {
+  width: 22px;
+  height: 22px;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.25);
+}
+
+/* ---------- ครอป ---------- */
+/* แถบบน: บอกว่าอยู่ในโหมดครอป */
+.toolbar.cropping > :not(.crop-mode) {
+  display: none !important;
+}
+
+
+
+.toolbar.cropping {
+  border-bottom-color: rgb(var(--accent-rgb) / 0.5);
+}
+
+.crop-mode {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  font-size: 13px;
+}
+
+.crop-mode[hidden] {
+  display: none;
+}
+
+.crop-mode strong {
+  color: var(--marker-ink);
+}
+
+.crop-mode-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  color: var(--marker-ink);
+  background: var(--marker-soft);
+}
+
+.crop-hint {
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+/* แถบล่าง: ขนาด + ปุ่ม */
+.crop-footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%; /* JS ปรับให้กว้างเท่ารูป */
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 20px;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--marker);
+  border-bottom: 0;
+}
+
+.crop-footer[hidden] {
+  display: none;
+}
+
+.crop-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.crop-actions .divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--line);
+}
+
+.crop-size {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--marker-ink);
+}
+
+/* tooltip ของปุ่มในแถบล่างขึ้นด้านบนแทน */
+.crop-footer .tip {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+
+body.cropping .canvas {
+  padding-bottom: 60px;
+}
+
+.crop-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+/* ระหว่างครอป ไม่ตัดสิ่งที่ล้นขอบภาพ เพื่อให้จุดจับที่ขอบภาพเห็นเต็มดวง */
+.stage.is-cropping {
+  overflow: visible;
+}
+
+/* ชั้นพื้นที่มืดนอกกรอบ: ตัดอยู่ในขอบภาพ */
+.crop-dim {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.crop-shade {
+  position: absolute;
+  box-shadow: 0 0 0 9999px rgb(10 11 14 / 0.6);
+}
+
+.crop-box {
+  position: absolute;
+  /* เส้นขอบกรอบครอปสีส้มของแอป มีเงาบางๆ ให้เห็นชัดทั้งบนภาพสว่างและมืด */
+  outline: 2px solid var(--marker);
+  box-shadow: 0 0 0 3px rgb(0 0 0 / 0.35);
+  cursor: move;
+}
+
+/* เส้นแบ่งสามส่วนช่วยจัดองค์ประกอบ */
+.crop-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* เส้นขาวมีเงาเข้มรอบเส้น เห็นได้ทั้งบนภาพสว่างและมืด */
+  filter: drop-shadow(0 0 1px rgb(0 0 0 / 0.85));
+  opacity: 0.55;
+  transition: opacity 0.15s;
+}
+
+/* เส้นแนวตั้ง 2 เส้น (ที่ 1/3 และ 2/3) */
+.crop-grid::before,
+.crop-grid::after {
+  content: '';
+  position: absolute;
+}
+
+.crop-grid::before {
+  top: 0;
+  bottom: 0;
+  left: 33.333%;
+  width: 33.333%;
+  border-left: 1px solid rgb(255 255 255 / 0.95);
+  border-right: 1px solid rgb(255 255 255 / 0.95);
+}
+
+/* เส้นแนวนอน 2 เส้น */
+.crop-grid::after {
+  left: 0;
+  right: 0;
+  top: 33.333%;
+  height: 33.333%;
+  border-top: 1px solid rgb(255 255 255 / 0.95);
+  border-bottom: 1px solid rgb(255 255 255 / 0.95);
+}
+
+.crop-layer[data-dragging] .crop-grid,
+.crop-box:hover .crop-grid {
+  opacity: 1;
+}
+
+.crop-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  background: #fff;
+  border: 1.5px solid var(--marker);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.4);
+}
+
+.ch-nw { left: 0; top: 0; cursor: nwse-resize; }
+.ch-n { left: 50%; top: 0; cursor: ns-resize; }
+.ch-ne { left: 100%; top: 0; cursor: nesw-resize; }
+.ch-e { left: 100%; top: 50%; cursor: ew-resize; }
+.ch-se { left: 100%; top: 100%; cursor: nwse-resize; }
+.ch-s { left: 50%; top: 100%; cursor: ns-resize; }
+.ch-sw { left: 0; top: 100%; cursor: nesw-resize; }
+.ch-w { left: 0; top: 50%; cursor: ew-resize; }
+
+/* ---------- ซูม + ขนาดภาพ ฝั่งซ้ายของแถบเครื่องมือ ---------- */
+.view-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.view-size {
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* จอแคบ: ให้อยู่ในบรรทัดเดียวกับเครื่องมือแทนการลอยทับ */
+@media (max-width: 1280px) {
+  .lib-tools {
+    position: static;
+    transform: none;
+  }
+
+  .view-size {
+    display: none;
+  }
+}
+
+
+
+
+.canvas {
+  padding-bottom: 60px;
+}
+
+
+/* ---------- ปุ่มดาวน์โหลดแบบแยก (กดตัวปุ่ม = ที่แก้ไขแล้ว, ลูกศร = เลือกแบบ) ---------- */
+.split {
+  position: relative;
+  display: inline-flex;
+}
+
+.split-more {
+  padding: 0 9px;
+  border-left: 1px solid rgb(0 0 0 / 0.25) !important;
+}
+
+.split-more .dd-caret {
+  border-top-color: var(--on-accent);
+}
+
+.split-menu {
+  left: auto;
+  right: 0;
+  transform: none;
+  min-width: 230px;
+}
+
+.download-item {
+  align-items: flex-start;
+  padding: 8px 10px;
+}
+
+/* ไอคอนหน้าตัวเลือกดาวน์โหลด (ดินสอ = ที่แก้ไขแล้ว, รูปภาพ = ต้นฉบับ) */
+.download-item .item-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line);
+  background: rgb(var(--fg-rgb) / 0.04);
+  color: var(--ink-soft);
+}
+
+.download-item .item-icon .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.download-item:hover .item-icon {
+  border-color: rgb(var(--accent-rgb) / 0.5);
+  color: var(--marker-ink);
+}
+
+.download-item .item-text {
+  display: grid;
+  gap: 1px;
+}
+
+.download-item strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.download-item small {
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+/* ขอบพื้นที่เบลอ (แสดงเฉพาะบนจอ ไม่ติดไปกับภาพที่ส่งออก) */
+.annotations .blur-edge {
+  fill: none;
+  stroke: var(--marker);
+  stroke-width: 1.5px;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+/* ---------- ขนาดปุ่มในแถบเครื่องมือ (กะทัดรัด) ---------- */
+.toolbar {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  gap: 4px 8px;
+}
+
+.toolbar .icon-btn,
+.toolbar .style-btn {
+  width: 30px;
+  height: 30px;
+}
+
+.toolbar .icon-btn .icon,
+.toolbar .style-btn .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.toolbar .dd-btn {
+  height: 30px;
+  padding: 0 6px 0 4px;
+}
+
+.toolbar .dd-btn .icon.line {
+  height: 20px;
+}
+
+.toolbar .colour-now {
+  width: 16px;
+  height: 16px;
+}
+
+.toolbar .swatch {
+  width: 22px;
+  height: 22px;
+}
+
+.toolbar .swatch > span:not(.tip) {
+  width: 14px;
+  height: 14px;
+}
+
+.toolbar .sep {
+  height: 20px;
+}
+
+/* ซูมกลาง footer: − [98% ▾] + จัดกึ่งกลางแนวตั้งทุกตัว */
+.view-tools .zoom {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 32px;
+}
+
+.zoom-dd {
+  position: relative;
+  display: flex;
+}
+
+.view-tools .zoom-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 74px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  background: rgb(var(--fg-rgb) / 0.04);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.view-tools .zoom-label:hover,
+.view-tools .zoom-label[aria-pressed='true'] {
+  border-color: rgb(var(--accent-rgb) / 0.6);
+  background: var(--marker-soft);
+}
+
+.zoom-menu {
+  top: calc(100% + 6px);
+  bottom: auto;
+  left: 0;
+  transform: none;
+  min-width: 150px;
+}
+
+.zoom-menu .dd-item {
+  justify-content: flex-start;
+}
+
+.zoom-menu .dd-item[aria-checked='true'] {
+  background: var(--marker-soft);
+  color: var(--marker-ink);
+  font-weight: 600;
+}
+
+.zoom-menu-sep {
+  display: block;
+  height: 1px;
+  margin: 4px 0;
+  background: var(--line);
+}
+
+
+/* ช่องพิมพ์ข้อความหลายบรรทัด (ขยายตามข้อความ) */
+.annot-textarea {
+  resize: none;
+  overflow: hidden;
+  white-space: pre;
+  line-height: 1.3;
+}
+
+/* ---------- เมนูคลิกขวาบนโน้ต ---------- */
+.ctx-menu {
+  position: fixed;
+  z-index: 60;
+  min-width: 210px;
+  padding: 6px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--marker);
+  box-shadow: var(--shadow-lg);
+}
+
+.ctx-colours {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 4px;
+}
+
+.ctx-chip {
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  background: var(--c);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2), 0 0 0 1px rgb(var(--fg-rgb) / 0.12);
+  cursor: pointer;
+}
+
+.ctx-chip:hover {
+  box-shadow: inset 0 0 0 2px var(--marker);
+}
+
+.ctx-sep {
+  display: block;
+  height: 1px;
+  margin: 6px 0;
+  background: var(--line);
+}
+
+.ctx-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ctx-item .icon {
+  width: 16px;
+  height: 16px;
+  color: var(--ink-soft);
+}
+
+.ctx-item:hover {
+  background: var(--marker-soft);
+}
+
+.ctx-item:hover .icon {
+  color: var(--marker-ink);
+}
+
+.ctx-item kbd {
+  margin-left: auto;
+  padding-left: 16px;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.ctx-item:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ctx-item:disabled:hover {
+  background: none;
+}
+
+.ctx-item.danger,
+.ctx-item.danger .icon {
+  color: var(--danger);
+}
+
+.ctx-item.danger:hover {
+  background: var(--danger-soft);
+}
+
+/* ตัวเลือกรูปทรงใต้ปุ่มเครื่องมือรูปทรง */
+.shape-dd {
+  display: inline-flex;
+}
+
+.shape-dd > .tool::after {
+  content: '';
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  border-left: 4px solid transparent;
+  border-bottom: 4px solid currentColor;
+  opacity: 0.6;
+}
+
+.shape-menu {
+  display: flex;
+  gap: 2px;
+  min-width: 0;
+}
+
+.shape-menu[hidden] {
+  display: none;
+}
+
+.tool-menu {
+  min-width: 170px;
+}
+
+.tool-menu .dd-item kbd {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.tool-menu .dd-item[aria-selected='true'] {
+  background: var(--marker-soft);
+}
+
+/* ---------- แถบซ้าย: รูปอื่นที่แคปไว้ ---------- */
+.lib-tools {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#library-btn[aria-pressed='true'] {
+  background: var(--marker-soft);
+  color: var(--marker-ink);
+  box-shadow: inset 0 -2px 0 var(--marker);
+}
+
+.library {
+  --lib-w: 200px;
+  position: fixed;
+  top: calc(var(--bar-h, 61px) + var(--toolbar-h, 47px));
+  left: 0;
+  bottom: 0;
+  z-index: 3;
+  width: var(--lib-w);
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border-right: 1px solid var(--line);
+}
+
+.library[hidden] {
+  display: none;
+}
+
+.library-head {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.library-head strong {
+  font-size: 12px;
+}
+
+.library-head small {
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.library-list {
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 10px 12px 20px;
+}
+
+.library-item {
+  display: grid;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  text-align: left;
+  cursor: grab;
+}
+
+.library-item:active {
+  cursor: grabbing;
+}
+
+/* รูปที่กำลังแก้อยู่ */
+.library-item.current {
+  cursor: default;
+  color: var(--ink);
+}
+
+.library-item.current .library-thumb {
+  position: relative;
+  border: 2px solid var(--marker);
+}
+
+.library-badge {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 2px 6px;
+  background: var(--marker);
+  color: var(--on-accent, #fff);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.library-thumb {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.library-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.library-item:hover .library-thumb,
+.library-item:focus-visible .library-thumb {
+  border-color: var(--marker);
+}
+
+.library-title {
+  overflow: hidden;
+  font-size: 11px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.library-item:hover .library-title {
+  color: var(--ink);
+}
+
+.library-empty {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+/* เปิดแถบซ้าย: เลื่อนพื้นที่ภาพไปทางขวา ไม่ให้แถบบังภาพ */
+body.library-open .notes,
+body.library-open .canvas {
+  margin-left: 200px;
+}
+
+/* ลากภาพมาวาง */
+.stage.drop-target {
+  outline: 3px dashed var(--marker);
+  outline-offset: 4px;
+}
+
+/* จุดจับกลางขอบ (ตอนครอปภาพแปะ) */
+.annotations .handle-n,
+.annotations .handle-s {
+  cursor: ns-resize;
+}
+
+.annotations .handle-e,
+.annotations .handle-w {
+  cursor: ew-resize;
+}
+
+/* ---------- กำลังโหลดตอนเปลี่ยนรูป ---------- */
+body.page-loading::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  width: 35%;
+  height: 3px;
+  background: var(--marker);
+  animation: page-progress 1s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes page-progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
+body.page-loading .toolbar {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* สลับรูป: ภาพเดิมจางลงระหว่างรอภาพใหม่ */
+.canvas {
+  transition: opacity 0.15s;
+}
+
+body.switching .canvas {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* รูปที่กดเปิด: กรอบส้มกระพริบ */
+.library-item.opening .library-thumb {
+  border-color: var(--marker);
+  animation: lib-opening 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes lib-opening {
+  to {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.page-loading::before,
+  .library-item.opening .library-thumb {
+    animation: none;
+  }
+}
+
+/* ---------- ซูม: รวมเป็นกล่องเดียว (segmented) ---------- */
+.toolbar .view-tools .zoom {
+  gap: 0;
+  height: 30px;
+  border: 1px solid var(--line);
+  background: rgb(var(--fg-rgb) / 0.04);
+}
+
+.toolbar .view-tools .zoom .icon-btn {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: none;
+}
+
+.toolbar .view-tools .zoom .icon-btn:hover:not(:disabled),
+.toolbar .view-tools .zoom-label:hover {
+  background: var(--marker-soft);
+  color: var(--marker-ink);
+}
+
+.toolbar .view-tools .zoom-label {
+  height: 28px;
+  min-width: 64px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  background: none;
+}
+
+.toolbar .view-size {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* ---------- responsive: แถบเครื่องมือ ---------- */
+/* กลุ่มซ้าย (แถบรูปอื่น + ซูม) อยู่ในแถวเดียวกับเครื่องมือเสมอ ไม่ลอยทับ แล้วจัดชิดซ้ายให้ขึ้นบรรทัดใหม่ได้เรียบร้อย */
+.toolbar {
+  justify-content: flex-start;
+}
+
+.toolbar .lib-tools {
+  position: static;
+  transform: none;
+}
+
+@media (max-width: 1280px) {
+  .toolbar .view-size {
+    display: none;
+  }
+}
+
+/* จอแคบ: แถบรูปอื่นลอยทับภาพแทนการดันภาพ (ไม่งั้นพื้นที่ภาพเหลือนิดเดียว) */
+@media (max-width: 860px) {
+  .library {
+    top: var(--bar-h, 61px);
+    z-index: 6;
+    width: min(240px, 70vw);
+    box-shadow: var(--shadow-lg);
+  }
+
+  body.library-open .notes,
+  body.library-open .canvas {
+    margin-left: 0;
+  }
+
+  .toolbar {
+    gap: 6px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .canvas {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* จอกลาง: ซ่อนเส้นคั่นและลดช่องว่าง ให้เครื่องมือพอดีบรรทัดเดียวนานขึ้น */
+@media (max-width: 1180px) {
+  .tool-row > .sep,
+  .toolbar .lib-tools > .sep {
+    display: none;
+  }
+
+  .toolbar {
+    column-gap: 6px;
+  }
+}
+
+/* ---------- จัดเครื่องมือไว้กลาง ---------- */
+/* กลุ่มซ้าย (แถบรูปอื่น + ซูม) ชิดซ้าย, เครื่องมือทั้งหมดอยู่ใน .tool-row จัดกลาง ไม่มีทางทับกัน */
+.toolbar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+}
+
+.tool-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 10px;
+  min-width: 0;
+}
+
+.toolbar .crop-mode {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
+/* จอกว้างพอ: คอลัมน์ขวาเว้นเท่าคอลัมน์ซ้าย เครื่องมือจึงอยู่กลางจอพอดี */
+@media (min-width: 1440px) {
+  .toolbar {
+    grid-template-columns: minmax(max-content, 1fr) auto minmax(0, 1fr);
+  }
+
+  .toolbar .lib-tools {
+    justify-self: start;
+  }
+}
+
+/* จอแคบ: กลุ่มซ้ายอยู่แถวบน เครื่องมืออยู่กลางแถวล่าง */
+@media (max-width: 860px) {
+  .toolbar {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 6px;
+  }
+
+  .toolbar .lib-tools {
+    justify-self: start;
+  }
+
+  .tool-row {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .tool-row {
+    column-gap: 6px;
+  }
+}
+
+/* ---------- ตำแหน่งในแถบเครื่องมือ: ซ้าย | เครื่องมือ (กลาง) | ลบรูปนี้ (ขวา) ---------- */
+.toolbar {
+  grid-template-areas: 'left tools right';
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  column-gap: 12px;
+}
+
+.toolbar .lib-tools {
+  grid-area: left;
+}
+
+.toolbar .tool-row {
+  grid-area: tools;
+}
+
+.toolbar .page-tools {
+  grid-area: right;
+  justify-self: end;
+  display: flex;
+}
+
+@media (min-width: 1440px) {
+  .toolbar {
+    grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .toolbar {
+    grid-template-areas: 'left right' 'tools tools';
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
+/* ปุ่มลบรูปนี้: กดครั้งแรกเปลี่ยนเป็นปุ่มยืนยันสีแดง */
+#delete-capture {
+  width: auto;
+  min-width: 30px;
+  gap: 6px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#delete-capture:hover:not(:disabled) {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+#delete-capture.confirm {
+  font-variant-numeric: tabular-nums;
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #fff;
+}
+
+/* ปุ่มชิดขอบขวา: tooltip ชิดขวาของปุ่ม ไม่ให้ล้นจอ (ล้นแม้ตอนซ่อนอยู่ ทำให้หน้าเลื่อนแนวนอนได้) */
+.page-tools .tip {
+  left: auto;
+  right: 0;
+  transform: translate(0, -3px);
+}
+
+.page-tools .has-tip.tip-on > .tip {
+  transform: translate(0, 0);
+}
+
+/* favicon ของเว็บ: สี่เหลี่ยมขาวมีขอบ อยู่หน้าชื่อรูปในแถบซ้าย */
+.library-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.library-name .library-title {
+  min-width: 0;
+}
+
+.library-fav {
+  flex: none;
+  box-sizing: content-box;
+  width: 12px;
+  height: 12px;
+  padding: 2px;
+  border: 1px solid rgb(0 0 0 / 0.15);
+  border-radius: 0;
+  background: #fff;
+  object-fit: contain;
+}
+
+/* ขนาดภาพต่อท้ายบรรทัด URL: (ขนาด 2560 × 2338 px) */
+.sub .title-size {
+  flex: none;
+  margin-left: -4px; /* ชิดจุดคั่นเข้ามาหน่อย ให้อ่านเป็นบรรทัดเดียวกับ url */
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .sub .title-size {
+    display: none;
+  }
+}
+
+/* ---------- รวมตัวเลือกรูปแบบไว้ในปุ่มเดียวบนจอเล็ก ---------- */
+.style-wrap,
+.style-group {
+  display: contents; /* จอกว้าง: ไม่มีกล่องห่อ ทุกตัวเรียงในแถวเครื่องมือตามปกติ */
+}
+
+.style-more {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .style-wrap {
+    position: relative;
+    display: flex;
+  }
+
+  .style-more {
+    display: inline-grid;
+  }
+
+  .style-group {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    z-index: 12;
+    display: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: max-content;
+    max-width: calc(100vw - 24px);
+    padding: 8px;
+    transform: translateX(calc(-50% + var(--shift, 0px)));
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--marker);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .style-group.open {
+    display: flex;
+  }
+
+  .style-group > .sep {
+    display: none;
+  }
+}
+
+/* จอแคบแถบเครื่องมือไม่ sticky (position: static) จึงไม่มีชั้นของตัวเอง ภาพด้านล่างวาดทับแผงลอยได้: ให้มีชั้นไว้ */
+@media (max-width: 860px) {
+  .toolbar {
+    position: relative;
+    top: 0; /* ล้างค่า top ของตอน sticky ไม่งั้นแถบเลื่อนลงไปเท่าความสูงแถบบน */
+    z-index: 4;
+  }
+}
+
+/* ---------- แว่นขยายตอนลากขอบครอป ---------- */
+.crop-loupe {
+  position: fixed;
+  z-index: 60;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.crop-loupe[hidden] {
+  display: none;
+}
+
+.crop-loupe canvas {
+  display: block;
+  width: 140px;
+  height: 140px;
+  border: 2px solid var(--marker);
+  background: #111;
+  box-shadow: var(--shadow-lg);
+}
+
+.crop-loupe-pos {
+  padding: 1px 6px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  background: var(--raised);
+  border: 1px solid var(--line);
+}
+
+/* เครื่องมือเลขลำดับ: วงกลมเลขจางทำหน้าที่เป็นเคอร์เซอร์ (บนรูปที่มีอยู่ยังเป็นเคอร์เซอร์ย้ายตามปกติ) */
+.stage[data-tool='step'] .annotations {
+  cursor: none;
+}

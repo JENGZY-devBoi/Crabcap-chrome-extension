@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CrabCap dev</title>
+  <script src="../lib/boot.js"></script>
+  <link rel="stylesheet" href="../styles/base.css">
+  <style>
+    body { max-width: 760px; margin: 0 auto; padding: 32px 20px 80px; }
+    h1 { display: flex; align-items: center; gap: 10px; font-size: 20px; margin: 0 0 4px; }
+    h2 { font-size: 15px; margin: 28px 0 8px; }
+    p { color: var(--ink-soft); margin: 0 0 12px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; }
+    code { background: var(--sunken); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    .warn { background: var(--marker-soft); color: var(--ink); padding: 10px 12px; border-radius: 8px; }
+    #log { font-size: 12px; color: var(--ink-soft); }
+    .fake-page { height: 900px; margin-top: 24px; border-radius: 8px; background:
+      repeating-linear-gradient(180deg, var(--surface) 0 60px, var(--sunken) 60px 120px); box-shadow: var(--shadow-md); }
+  </style>
+</head>
+<body>
+  <h1><img src="../icons/icon32.png" width="28" height="28" alt="">CrabCap · dev preview</h1>
+  <p>เปิดหน้า UI ของ extension ในแท็บธรรมดาได้โดยไม่ต้องติดตั้ง ใช้ <code>chrome.*</code> จำลองจาก <code>lib/boot.js</code>
+    และเก็บภาพใน IndexedDB ของ origin นี้ (แยกจาก extension จริง)</p>
+  <p class="warn" id="ext-warn" hidden>หน้านี้กำลังรันอยู่ใน extension จริง ภาพตัวอย่างจะถูกเพิ่มเข้าไปในประวัติจริงด้วย</p>
+
+  <h2>1. สร้างภาพตัวอย่าง</h2>
+  <p>สร้างภาพจำลอง 4 แบบ (ทั้งหน้ายาว, ส่วนที่มองเห็น, เลือกพื้นที่, element) แล้วบันทึกลงฐานข้อมูล</p>
+  <div class="row">
+    <button class="btn primary" id="seed" type="button">สร้างภาพตัวอย่าง</button>
+    <button class="btn" id="seed-long" type="button">สร้างภาพยาวมาก (แบ่งไฟล์)</button>
+    <button class="btn" id="wipe" type="button">ลบภาพทั้งหมด</button>
+  </div>
+  <p id="log"></p>
+
+  <h2>2. เปิดหน้า UI</h2>
+  <div class="row">
+    <a class="btn" href="../popup.html" target="_blank">Popup</a>
+    <a class="btn" href="../history.html" target="_blank">ภาพทั้งหมด</a>
+    <a class="btn" id="open-latest" href="#" target="_blank">ภาพล่าสุด (result)</a>
+    <a class="btn" href="../result.html#missing" target="_blank">result: ไม่พบภาพ</a>
+  </div>
+
+  <h2>3. การ์ดความคืบหน้าในหน้าเว็บ</h2>
+  <p>จำลองสิ่งที่ผู้ใช้เห็นระหว่างแคปทั้งหน้า กด Esc หรือ "ยกเลิก" ได้</p>
+  <div class="row">
+    <button class="btn" id="demo-progress" type="button">เล่นความคืบหน้า</button>
+    <button class="btn" id="demo-error" type="button">แสดงข้อผิดพลาด</button>
+    <button class="btn" id="demo-select" type="button">overlay เลือกพื้นที่</button>
+  </div>
+  <div class="fake-page"></div>
+
+  <script type="module" src="dev.js"></script>
+</body>
+</html>

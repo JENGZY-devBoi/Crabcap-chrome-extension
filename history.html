@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CrabCap</title>
+  <script src="lib/boot.js"></script>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/history.css">
+</head>
+<body>
+  <header class="bar">
+    <div class="brand">
+      <img class="mascot" src="icons/mascot.svg" alt="" width="52" height="40">
+      <span class="wordmark">CrabCap</span>
+      <h1 data-i18n="historyTitle"></h1>
+      <span class="count" id="count"></span>
+    </div>
+    <label class="search">
+      <span data-icon="search"></span>
+      <input id="q" type="search" data-i18n-placeholder="searchPlaceholder" autocomplete="off">
+    </label>
+    <span class="settings-wrap"><button class="icon-btn plain" id="settings-btn" type="button" data-i18n-aria="settings"></button></span>
+  </header>
+
+  <nav class="filters" id="filters" data-i18n-aria="filterByMode">
+    <button type="button" data-mode="" aria-pressed="true" data-icon="all" data-i18n="filterAll"></button>
+    <button type="button" data-mode="full" aria-pressed="false" data-icon="full" data-i18n="modeFull"></button>
+    <button type="button" data-mode="visible" aria-pressed="false" data-icon="visible" data-i18n="modeVisible"></button>
+    <button type="button" data-mode="region" aria-pressed="false" data-icon="region" data-i18n="modeRegion"></button>
+    <button type="button" data-mode="element" aria-pressed="false" data-icon="element" data-i18n="modeElement"></button>
+    <span class="hint" data-i18n="keepHint"></span>
+  </nav>
+
+  <main id="grid" class="sites" aria-live="polite"></main>
+  <p id="empty" class="empty" hidden></p>
+
+  <div class="select-bar" id="select-bar" role="toolbar" hidden>
+    <span class="sel-count" id="sel-count"></span>
+    <button class="btn ghost" id="sel-all" type="button" data-i18n="selectAllShown"></button>
+    <button class="btn ghost" id="sel-clear" type="button" data-i18n="clearSelection"></button>
+    <span class="sel-divider" aria-hidden="true"></span>
+    <button class="btn ghost" id="sel-files" type="button" data-icon="download"><span data-i18n="downloadFiles"></span></button>
+    <button class="btn primary" id="sel-zip" type="button" data-icon="zip"><span data-i18n="downloadZip"></span></button>
+  </div>
+
+  <script type="module" src="history.js"></script>
+</body>
+</html>

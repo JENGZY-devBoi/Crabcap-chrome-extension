@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CrabCap</title>
+  <script src="lib/boot.js"></script>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/result.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="back" href="history.html" data-i18n-aria="allCaptures"><img class="mascot" src="icons/mascot.svg" alt="" width="39" height="30"></a>
+    <div class="source">
+      <h1 id="title" data-i18n="preparing"></h1>
+      <p class="sub"><a id="url" target="_blank" rel="noopener"></a><span class="title-size" id="size"></span></p>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="copy" type="button" disabled data-icon="copy"><span data-i18n="copy"></span></button>
+      <div class="split" id="download-split">
+        <button class="btn primary" id="download" type="button" disabled data-icon="download"><span data-i18n="downloadPng"></span></button>
+        <button class="btn primary split-more" id="download-more" type="button" disabled aria-haspopup="menu" aria-expanded="false" data-i18n-aria="downloadOptions"><span class="dd-caret" aria-hidden="true"></span></button>
+        <div class="dd-menu split-menu" id="download-menu" role="menu" hidden>
+          <button class="dd-item download-item" type="button" role="menuitem" data-kind="edited">
+            <span class="item-icon" data-icon="rename" aria-hidden="true"></span>
+            <span class="item-text"><strong data-i18n="downloadEdited"></strong><small data-i18n="downloadEditedDesc"></small></span>
+          </button>
+          <button class="dd-item download-item" type="button" role="menuitem" data-kind="original">
+            <span class="item-icon" data-icon="image" aria-hidden="true"></span>
+            <span class="item-text"><strong data-i18n="downloadOriginal"></strong><small data-i18n="downloadOriginalDesc"></small></span>
+          </button>
+        </div>
+      </div>
+      <span class="divider" aria-hidden="true"></span>
+      <span class="settings-wrap"><button class="icon-btn plain" id="settings-btn" type="button" data-i18n-aria="settings"></button></span>
+    </div>
+  </header>
+
+  <div class="toolbar" id="toolbar" role="toolbar" data-i18n-aria="annotTools" hidden>
+    <div class="lib-tools">
+      <button class="icon-btn" id="library-btn" type="button" aria-controls="library" aria-pressed="false" data-i18n-aria="otherCaptures" data-icon="images" disabled></button>
+      <span class="sep" aria-hidden="true"></span>
+      <div class="view-tools" id="view-tools">
+        <div class="zoom" role="group" data-i18n-aria="zoom">
+          <button class="icon-btn" id="zoom-out" type="button" data-i18n-aria="zoomOut" data-icon="minus"></button>
+          <div class="zoom-dd" id="zoom-dd">
+            <button class="zoom-label" id="zoom-label" type="button" aria-haspopup="menu" aria-expanded="false" data-i18n-aria="zoom"></button>
+            <div class="dd-menu zoom-menu" id="zoom-menu" role="menu" hidden>
+              <button class="dd-item" type="button" role="menuitemradio" data-zoom="fit" data-i18n="fit"></button>
+              <button class="dd-item" type="button" role="menuitemradio" data-zoom="contain" data-i18n="showAll"></button>
+              <span class="zoom-menu-sep" aria-hidden="true"></span>
+              <button class="dd-item" type="button" role="menuitemradio" data-zoom="0.5">50%</button>
+              <button class="dd-item" type="button" role="menuitemradio" data-zoom="1">100%</button>
+              <button class="dd-item" type="button" role="menuitemradio" data-zoom="2">200%</button>
+            </div>
+          </div>
+          <button class="icon-btn" id="zoom-in" type="button" data-i18n-aria="zoomIn" data-icon="plus"></button>
+        </div>
+      </div>
+    </div>
+    <div class="tool-row">
+      <div class="group" id="tools"></div>
+      <div class="group"><button class="icon-btn" id="crop-btn" type="button" data-i18n-aria="crop" data-icon="crop" disabled></button></div>
+      <span class="sep"></span>
+      <div class="dropdown color-dd" id="colors"></div>
+      <div class="style-wrap" id="style-wrap">
+        <button class="icon-btn style-more" id="style-more" type="button" aria-haspopup="true" aria-expanded="false" aria-pressed="false" data-i18n-aria="styleOptions" data-icon="sliders"></button>
+        <div class="style-group" id="style-group">
+          <div class="dropdown" id="fontsizes"></div>
+          <div class="dropdown" id="outlines"></div>
+          <span class="sep"></span>
+          <div class="dropdown" id="sizes"></div>
+          <div class="dropdown" id="dashes"></div>
+          <div class="dropdown" id="heads"></div>
+          <div class="dropdown" id="fills"></div>
+          <div class="dropdown" id="borders"></div>
+          <div class="dropdown" id="arrange"></div>
+        </div>
+      </div>
+      <span class="sep"></span>
+      <div class="group">
+        <button class="icon-btn" id="undo" type="button" data-i18n-aria="undo" data-icon="undo" disabled></button>
+        <button class="icon-btn" id="redo" type="button" data-i18n-aria="redo" data-icon="redo" disabled></button>
+        <button class="icon-btn" id="clear" type="button" data-i18n-aria="clearNotes" data-icon="eraser" disabled></button>
+      </div>
+    </div>
+    <div class="page-tools">
+      <button class="icon-btn" id="delete-capture" type="button" data-i18n-aria="deleteThis" data-icon="trash"></button>
+    </div>
+    <div class="crop-mode" id="crop-mode" hidden>
+      <span class="crop-mode-icon" data-icon="crop"></span>
+      <strong data-i18n="cropMode"></strong>
+      <span class="crop-hint" data-i18n="cropHint"></span>
+    </div>
+  </div>
+
+  <aside class="library" id="library" hidden>
+    <div class="library-head">
+      <strong data-i18n="otherCaptures"></strong>
+    </div>
+    <div class="library-list" id="library-list"></div>
+  </aside>
+
+  <p id="notes" class="notes" hidden></p>
+  <main id="canvas" class="canvas"></main>
+
+  <footer class="crop-footer" id="crop-bar" hidden>
+    <span class="crop-size" id="crop-size"></span>
+    <div class="crop-actions">
+      <button class="btn ghost" id="crop-all" type="button" data-i18n="cropSelectAll"></button>
+      <button class="btn ghost" id="crop-restore" type="button" data-i18n="cropRestore" hidden></button>
+      <span class="divider" aria-hidden="true"></span>
+      <button class="btn ghost" id="crop-cancel" type="button"><span data-i18n="cancel"></span></button>
+      <button class="btn primary" id="crop-apply" type="button" data-icon="crop"><span data-i18n="cropApply"></span></button>
+    </div>
+  </footer>
+  <script type="module" src="result.js"></script>
+</body>
+</html>

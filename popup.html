@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CrabCap</title>
+  <script src="lib/boot.js"></script>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/popup.css">
+</head>
+<body>
+  <header class="top">
+    <img class="mascot" src="icons/mascot.svg" alt="" width="52" height="40">
+    <span class="brand"><span class="wordmark">CrabCap</span><small id="greeting"></small></span>
+    <button class="icon-btn plain" id="history" type="button" data-i18n-title="allCaptures" data-i18n-aria="allCaptures" data-icon="history"></button>
+  </header>
+
+  <main>
+    <h1 class="label" data-i18n="captureThisPage"></h1>
+    <div class="modes" role="list">
+      <button class="mode" data-mode="full" data-command="capture-full" role="listitem">
+        <span class="glyph" data-icon="full"></span>
+        <span class="text"><strong data-i18n="captureFullTitle"></strong><small data-i18n="fullDesc"></small></span>
+      </button>
+      <button class="mode" data-mode="visible" data-command="capture-visible" role="listitem">
+        <span class="glyph" data-icon="visible"></span>
+        <span class="text"><strong data-i18n="captureVisibleTitle"></strong><small data-i18n="visibleDesc"></small></span>
+      </button>
+      <button class="mode" data-mode="select" data-command="capture-select" role="listitem">
+        <span class="glyph" data-icon="region"></span>
+        <span class="text"><strong data-i18n="captureSelectTitle"></strong><small data-i18n="selectDesc"></small></span>
+      </button>
+    </div>
+    <p class="blocked" id="blocked" hidden><img class="mascot" src="icons/mascot.svg" alt="" width="39" height="30"><span data-i18n="blocked"></span></p>
+
+    <section class="recent" id="recent" hidden>
+      <div class="section-head">
+        <h2 class="label" data-i18n="recent"></h2>
+        <a href="history.html" id="all" class="see-all" data-i18n="seeAll"></a>
+      </div>
+      <div class="thumbs" id="thumbs"></div>
+    </section>
+
+    <details class="settings">
+      <summary data-i18n="settings"></summary>
+      <div id="settings-body"></div>
+    </details>
+  </main>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

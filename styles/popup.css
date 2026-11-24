@@ -1,0 +1,418 @@
+body {
+  width: 352px;
+  background:
+    radial-gradient(420px 260px at 0% -10%, rgb(var(--accent-rgb) / var(--glow-a)), transparent 70%),
+    var(--paper);
+}
+
+/* dev preview: จำลองกรอบ popup */
+.dev-popup body {
+  margin: 40px auto;
+  box-shadow: var(--shadow-lg);
+}
+
+/* ---------- หัว ---------- */
+.top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 10px 14px;
+  border-bottom: 2px solid var(--marker);
+}
+
+/* ขยาย 2px ต่อ 1 pixel ของ sprite (26×20) ให้คมพอดี */
+.top .mascot {
+  width: 52px;
+  height: 40px;
+}
+
+.brand {
+  flex: 1;
+  display: grid;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.brand .wordmark {
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.brand small {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+main {
+  padding: 14px 12px 12px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin: 0 2px 8px;
+}
+
+/* ---------- โหมด ----------
+   รวมเป็นกล่องเดียวแบ่งด้วยเส้นบาง ไฮไลต์เฉพาะตอนชี้หรือกด Tab */
+.modes {
+  display: grid;
+  border: 1px solid var(--line);
+  background: var(--glass);
+}
+
+.mode {
+  position: relative;
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 11px 12px 11px 14px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.mode + .mode {
+  border-top: 1px solid var(--line);
+}
+
+.mode::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--marker);
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+
+.mode:hover,
+.mode:focus-visible {
+  background: var(--marker-soft);
+  outline: none;
+}
+
+.mode:hover::before,
+.mode:focus-visible::before {
+  opacity: 1;
+}
+
+.mode:disabled {
+  opacity: 0.45;
+  cursor: default;
+  background: transparent;
+}
+
+.mode:disabled::before {
+  opacity: 0;
+}
+
+.glyph {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--marker-ink);
+}
+
+.glyph .icon {
+  width: 28px;
+  height: 28px;
+  stroke-width: 1.5;
+  overflow: visible;
+}
+
+/* ---------- animation ตอนชี้ ----------
+   ทุกไอคอน "เด้ง" เข้ามา แล้วแต่ละโหมดขยับตามความหมายของมันครั้งเดียวจบ (ไม่วนซ้ำ)
+   ใส่ !important เพื่อให้เล่นได้แม้เปิดลดการเคลื่อนไหวในระบบ (เป็นการขยับเล็กๆ ในไอคอนเท่านั้น) */
+.glyph .icon,
+.glyph .icon path,
+.glyph .icon rect {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+}
+
+.mode:hover .glyph .icon,
+.mode:focus-visible .glyph .icon {
+  animation: icon-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+
+@keyframes icon-pop {
+  0% { transform: scale(1) rotate(0); }
+  40% { transform: scale(1.14) rotate(-6deg); }
+  70% { transform: scale(1.05) rotate(3deg); }
+  100% { transform: scale(1.08) rotate(0); }
+}
+
+/* ทั้งหน้า: เส้นเนื้อหาไหลขึ้นต่อเนื่องเหมือนกำลังเลื่อนหน้า */
+.mode[data-mode='full']:hover .icon path:last-child,
+.mode[data-mode='full']:focus-visible .icon path:last-child {
+  animation: icon-scroll 1.2s cubic-bezier(0.45, 0, 0.55, 1) 0.2s both !important;
+}
+
+/* เลื่อนขึ้นหายไป แล้วโผล่จากด้านล่างกลับที่เดิม (เล่นครั้งเดียวจบที่ท่าปกติ) */
+@keyframes icon-scroll {
+  0% { transform: translateY(0); opacity: 1; }
+  45% { transform: translateY(-2px); opacity: 0; }
+  46% { transform: translateY(2px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* ส่วนที่มองเห็น: หน้าจอยืดหดเด้งๆ จุดบนแถบกระโดด */
+.mode[data-mode='visible']:hover .icon rect,
+.mode[data-mode='visible']:hover .icon path:first-of-type,
+.mode[data-mode='visible']:focus-visible .icon rect,
+.mode[data-mode='visible']:focus-visible .icon path:first-of-type {
+  transform-origin: 12px 19.5px;
+  animation: icon-squash 1.1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both !important;
+}
+
+.mode[data-mode='visible']:hover .icon path:last-child,
+.mode[data-mode='visible']:focus-visible .icon path:last-child {
+  animation: icon-hop 1.1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both !important;
+}
+
+@keyframes icon-squash {
+  0%, 100% { transform: scale(1, 1); }
+  30% { transform: scale(1.05, 0.93); }
+  55% { transform: scale(0.98, 1.03); }
+  75% { transform: scale(1.01, 0.99); }
+}
+
+@keyframes icon-hop {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(0.3px); }
+  55% { transform: translateY(-1.5px); }
+  75% { transform: translateY(0); }
+}
+
+/* เลือกพื้นที่: มุมกรอบบีบเข้าเหมือนล็อกเป้า ลูกศรกดคลิก (มุมมีแค่ 3 ด้าน จึงไม่หมุนรอบ) */
+.mode[data-mode='select']:hover .icon path:first-child,
+.mode[data-mode='select']:focus-visible .icon path:first-child {
+  animation: icon-lock 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.2s both !important;
+}
+
+.mode[data-mode='select']:hover .icon path:last-child,
+.mode[data-mode='select']:focus-visible .icon path:last-child {
+  transform-origin: 16px 16px;
+  animation: icon-click 1.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both !important;
+}
+
+@keyframes icon-lock {
+  0%, 100% { transform: rotate(0) scale(1); }
+  35% { transform: rotate(-5deg) scale(0.87); }
+  50% { transform: rotate(2deg) scale(0.92); }
+  70% { transform: rotate(0) scale(1.02); }
+}
+
+@keyframes icon-click {
+  0%, 40% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-1px, -1px) scale(0.88); }
+  65% { transform: translate(-0.6px, -0.6px) scale(1.04); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+
+/* ปุ่มลัด: ตัวเล็กจางๆ ไม่มีกรอบ */
+.mode kbd {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+  transition: color 0.12s;
+}
+
+.mode:hover kbd,
+.mode:focus-visible kbd {
+  color: var(--ink-soft);
+}
+
+.text strong {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.text small {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.blocked {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 1px solid rgb(248 113 113 / 0.3);
+  border-left: 3px solid var(--danger);
+  background: var(--danger-soft);
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* ---------- ล่าสุด ---------- */
+.recent {
+  margin-top: 14px;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.see-all {
+  font-size: 12px;
+  color: var(--marker-ink);
+  text-decoration: none;
+  margin-right: 2px;
+}
+
+.see-all:hover {
+  text-decoration: underline;
+}
+
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.thumb {
+  display: grid;
+  gap: 4px;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+
+.thumb .img {
+  aspect-ratio: 4 / 3;
+  background: var(--sunken) center top / cover no-repeat;
+  border: 1px solid var(--line);
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.thumb:hover .img,
+.thumb:focus-visible .img {
+  border-color: var(--marker);
+  box-shadow: inset 0 -2px 0 var(--marker);
+}
+
+.thumb:focus-visible {
+  outline: none;
+}
+
+.thumb small {
+  font-size: 11px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- การตั้งค่า ---------- */
+.settings {
+  margin-top: 14px;
+  border-top: 1px solid var(--line);
+  padding: 8px 2px 0;
+}
+
+.settings summary {
+  cursor: pointer;
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings summary::-webkit-details-marker {
+  display: none;
+}
+
+.settings summary::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+}
+
+.settings[open] summary::before {
+  transform: rotate(45deg);
+}
+
+.settings summary:hover {
+  color: var(--ink);
+}
+
+.settings[open] summary {
+  margin-bottom: 6px;
+}
+
+/* เปิด popup ครั้งแรกของวัน: ปูเดินเฉียงเข้ามาจากซ้ายแบบปู (ส่ายไปมา) แล้วกระโดดทักทาย */
+.top .mascot.intro {
+  animation: crab-intro 1.3s ease-out both;
+}
+
+@keyframes crab-intro {
+  0% {
+    opacity: 0;
+    transform: translateX(-56px) rotate(0deg);
+  }
+  12% {
+    opacity: 1;
+    transform: translateX(-44px) rotate(-8deg);
+  }
+  26% {
+    transform: translateX(-30px) rotate(8deg);
+  }
+  40% {
+    transform: translateX(-16px) rotate(-8deg);
+  }
+  54% {
+    transform: translateX(0) rotate(6deg);
+  }
+  68% {
+    transform: translateY(-9px) rotate(0deg) scale(1.06);
+  }
+  80% {
+    transform: translateY(0) scale(0.97, 1.03);
+  }
+  90% {
+    transform: translateY(-3px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ตั้งลดการเคลื่อนไหวไว้ base.css ปิด animation ทั้งหมด: ท่านี้สั้นและเล่นวันละครั้ง จึงเปิดไว้ */
+@media (prefers-reduced-motion: reduce) {
+  .top .mascot.intro {
+    animation: crab-intro 1.3s ease-out both !important;
+  }
+}
